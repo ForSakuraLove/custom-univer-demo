@@ -4,13 +4,12 @@ import type { IMenuItemFactory } from '@univerjs/ui';
 import { IMenuService } from '@univerjs/ui';
 import { Inject, Injector } from '@wendellhu/redi';
 
-import { CustomMenuItemSingleButtonFactory } from './menu/single-button.menu';
-import { SingleButtonOperation } from '../commands/operations/single-button.operation';
-import { ButtonIcon } from '../components/button-icon/ButtonIcon';
-import { MainButtonIcon } from '../components/main-button-icon/MainButtonIcon';
-import { ItemIcon } from '../components/item-icon/ItemIcon';
-import { CustomMenuItemDropdownListFirstItemFactory, CustomMenuItemDropdownListMainButtonFactory, CustomMenuItemDropdownListSecondItemFactory } from './menu/dropdown-list.menu';
-import { DropdownListFirstItemOperation, DropdownListSecondItemOperation } from '../commands/operations/dropdown-list.operation';
+import { ImportExcelButtonFactory } from './menu/import-excel-button.menu';
+import { ExportExcelButtonFactory } from './menu/export-excel-button.menu';
+import { ImportExcelButtonOperation } from '../commands/operations/ImportExcelButtonOperation';
+import { ExportExcelButtonOperation } from '../commands/operations/ExportExcelButtonOperation';
+import { ImportExcelButtonIcon } from '../components/button-icon/ImportExcelButtonIcon';
+import { ExportExcelButtonIcon } from '../components/button-icon/ExportExcelButtonIcon';
 
 @OnLifecycle(LifecycleStages.Steady, CustomMenuController)
 export class CustomMenuController extends Disposable {
@@ -32,9 +31,8 @@ export class CustomMenuController extends Disposable {
     */
     private _initCommands(): void {
         [
-            SingleButtonOperation,
-            DropdownListFirstItemOperation,
-            DropdownListSecondItemOperation,
+            ImportExcelButtonOperation,
+            ExportExcelButtonOperation,
         ].forEach((c) => {
             this.disposeWithMe(this._commandService.registerCommand(c));
         });
@@ -45,9 +43,8 @@ export class CustomMenuController extends Disposable {
     */
     private _registerComponents(): void {
         const componentManager = this._componentManager;
-        this.disposeWithMe(componentManager.register("ButtonIcon", ButtonIcon));
-        this.disposeWithMe(componentManager.register("MainButtonIcon", MainButtonIcon));
-        this.disposeWithMe(componentManager.register("ItemIcon", ItemIcon));
+        this.disposeWithMe(componentManager.register("ImportExcelButtonIcon", ImportExcelButtonIcon));
+        this.disposeWithMe(componentManager.register("ExportExcelButtonIcon", ExportExcelButtonIcon));
     }
 
     /**
@@ -56,13 +53,11 @@ export class CustomMenuController extends Disposable {
     private _initMenus(): void {
         (
             [
-                CustomMenuItemSingleButtonFactory,
-                CustomMenuItemDropdownListMainButtonFactory,
-                CustomMenuItemDropdownListFirstItemFactory,
-                CustomMenuItemDropdownListSecondItemFactory
+                ImportExcelButtonFactory,
+                ExportExcelButtonFactory,
             ] as IMenuItemFactory[]
         ).forEach((factory) => {
-            this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory)));
+            this.disposeWithMe(this._menuService.addMenuItem(this._injector.invoke(factory), {}));
         });
     }
 }
